@@ -9614,7 +9614,9 @@ pub const AUDIT = struct {
 };
 
 pub const PTRACE = struct {
+
     pub const TRACEME = 0;
+
     pub const PEEKTEXT = 1;
     pub const PEEKDATA = 2;
     pub const PEEKUSER = 3;
@@ -9648,6 +9650,338 @@ pub const PTRACE = struct {
     pub const SECCOMP_GET_FILTER = 0x420c;
     pub const SECCOMP_GET_METADATA = 0x420d;
     pub const GET_SYSCALL_INFO = 0x420e;
+    pub const GET_RSEQ_CONFIGURATION = 0x420f;
+
+    pub const O = struct {
+        pub const TRACESYSGOOD = 0x00000001;
+        pub const TRACEFORK = 0x00000002;
+        pub const TRACEVFORK = 0x00000004;
+        pub const TRACECLONE = 0x00000008;
+        pub const TRACEEXEC = 0x00000010;
+        pub const TRACEVFORKDONE = 0x00000020;
+        pub const TRACEEXIT = 0x00000040;
+        pub const TRACESECCOMP = 0x00000080;
+        pub const EXITKILL = 0x00100000;
+        pub const SUSPEND_SECCOMP = 0x00200000;
+        pub const MASK = 0x003000ff;
+    };
+
+    pub const EVENT = struct {
+        pub const FORK = 1;
+        pub const VFORK = 2;
+        pub const CLONE = 3;
+        pub const EXEC = 4;
+        pub const VFORK_DONE = 5;
+        pub const EXIT = 6;
+        pub const SECCOMP = 7;
+        pub const STOP = 128;
+    };
+
+    pub const PEEKSIGINFO_SHARED = 1;
+
+    pub const GETWMMXREGS = switch (native_arch) {
+        .arm => 18,
+        else => @compileError("no PTRACE.GETWMMXREGS on this architecture")
+    };
+    pub const SETWMMXREGS = switch (native_arch) {
+        .arm => 19,
+        else => @compileError("no PTRACE.SETWMMXREGS on this architecture")
+    };
+
+    pub const GET_THREAD_AREA = switch (native_arch) {
+        .arm => 22,
+        .x86, .x86_64, .m68k, .mips, .mips64 => 25,
+        else => @compileError("no PTRACE.GET_THREAD_AREA on this architecture")
+    };
+    pub const SET_THREAD_AREA = switch (native_arch) {
+        .x86, .x86_64, .m68k, .mips, .mips64 => 26,
+        else => @compileError("no PTRACE.SET_THREAD_AREA on this architecture")
+    };
+
+    pub const SET_SYSCALL = switch (native_arch) {
+        .arm => 23,
+        else => @compileError("no PTRACE.SET_SYSCALL on this architecture")
+    };
+    pub const GETCRUNCHREGS = switch (native_arch) {
+        .arm => 25,
+        else => @compileError("no PTRACE.GETCRUNCHREGS on this architecture")
+    };
+    pub const SETCRUNCHREGS = switch (native_arch) {
+        .arm => 26,
+        else => @compileError("no PTRACE.SETCRUNCHREGS on this architecture")
+    };
+    pub const GETVFPREGS = switch (native_arch) {
+        .arm => 27,
+        else => @compileError("no PTRACE.GETVFPREGS on this architecture")
+    };
+    pub const SETVFPREGS = switch (native_arch) {
+        .arm => 28,
+        else => @compileError("no PTRACE.SETVFPREGS on this architecture")
+    };
+    pub const GETHBPREGS = switch (native_arch) {
+        .arm => 29,
+        else => @compileError("no PTRACE.GETHBPREGS on this architecture")
+    };
+    pub const SETHBPREGS = switch (native_arch) {
+        .arm => 30,
+        else => @compileError("no PTRACE.SETHBPREGS on this architecture")
+    };
+    pub const GETFDPIC = switch (native_arch) {
+        .arm => 31,
+        else => @compileError("no PTRACE.GETFDPIC on this architecture")
+    };
+    pub const GETFDPIC_EXEC = switch (native_arch) {
+        .arm => 0,
+        else => @compileError("no PTRACE.GETFDPIC_EXEC on this architecture")
+    };
+    pub const GETFDPIC_INTERP = switch (native_arch) {
+        .arm => 1,
+        else => @compileError("no PTRACE.GETFDPIC_INTERP on this architecture")
+    };
+
+    pub const ARCH_PRCTL = switch (native_arch) {
+        .x86_64 => 30,
+        else => @compileError("no PTRACE.ARCH_PRCTL on this architecture")
+    };
+    pub const SYSEMU = switch (native_arch) {
+        .x86, .x86_64, .s390x => 31,
+        .powerpc, .powerpc64 => 0x1d,
+        else => @compileError("no PTRACE.SYSEMU on this architecture")
+    };
+    pub const SYSEMU_SINGLESTEP = switch (native_arch) {
+        .x86, .x86_64, .s390x => 32,
+        .powerpc, .powerpc64 => 0x1e,
+        else => @compileError("no PTRACE.SYSEMU_SINGLESTEP on this architecture")
+    };
+    pub const SINGLEBLOCK = switch (native_arch) {
+        .x86, .x86_64, .m68k => 33,
+        .s390x => 12,
+        .powerpc, .powerpc64 => 0x100,
+        else => @compileError("no PTRACE.SINGLEBLOCK on this architecture")
+    };
+
+    pub const PEEKTEXT_3264 = switch (native_arch) {
+        .mips, .mips64 => 0xc0,
+        else => @compileError("no PTRACE.PEEKTEXT_3264 on this architecture")
+    };
+    pub const PEEKDATA_3264 = switch (native_arch) {
+        .mips, .mips64 => 0xc1,
+        else => @compileError("no PTRACE.PEEKDATA_3264 on this architecture")
+    };
+    pub const POKETEXT_3264 = switch (native_arch) {
+        .mips, .mips64 => 0xc2,
+        else => @compileError("no PTRACE.POKETEXT_3264 on this architecture")
+    };
+    pub const POKEDATA_3264 = switch (native_arch) {
+        .mips, .mips64 => 0xc3,
+        else => @compileError("no PTRACE.POKEDATA_3264 on this architecture")
+    };
+    pub const GET_THREAD_AREA_3264 = switch (native_arch) {
+        .mips, .mips64 => 0xc4,
+        else => @compileError("no PTRACE.GET_THREAD_AREA_3264 on this architecture")
+    };
+    pub const GET_WATCH_REGS = switch (native_arch) {
+        .mips, .mips64 => 0xd0,
+        else => @compileError("no PTRACE.GET_WATCH_REGS on this architecture")
+    };
+    pub const SET_WATCH_REGS = switch (native_arch) {
+        .mips, .mips64 => 0xd1,
+        else => @compileError("no PTRACE.SET_WATCH_REGS on this architecture")
+    };
+
+    pub const OLDSETOPTIONS = switch (native_arch) {
+        .s390x => 21,
+        else => @compileError("no PTRACE.OLDSETOPTIONS on this architecture")
+    };
+    pub const PEEKUSR_AREA = switch (native_arch) {
+        .s390x => 0x5000,
+        else => @compileError("no PTRACE.PEEKUSR_AREA on this architecture")
+    };
+    pub const POKEUSR_AREA = switch (native_arch) {
+        .s390x => 0x5001,
+        else => @compileError("no PTRACE.POKEUSR_AREA on this architecture")
+    };
+    pub const GET_LAST_BREAK = switch (native_arch) {
+        .s390x => 0x5006,
+        else => @compileError("no PTRACE.GET_LAST_BREAK on this architecture")
+    };
+    pub const ENABLE_TE = switch (native_arch) {
+        .s390x => 0x5009,
+        else => @compileError("no PTRACE.ENABLE_TE on this architecture")
+    };
+    pub const DISABLE_TE = switch (native_arch) {
+        .s390x => 0x5010,
+        else => @compileError("no PTRACE.DISABLE_TE on this architecture")
+    };
+    pub const TE_ABORT_RAND = switch (native_arch) {
+        .s390x => 0x5011,
+        else => @compileError("no PTRACE.TE_ABORT_RAND on this architecture")
+    };
+
+    pub const GETVRREGS = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x12,
+        else => @compileError("no PTRACE.GETVRREGS on this architecture")
+    };
+    pub const SETVRREGS = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x13,
+        else => @compileError("no PTRACE.SETVRREGS on this architecture")
+    };
+    pub const GETEVRREGS = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x14,
+        else => @compileError("no PTRACE.GETEVRREGS on this architecture")
+    };
+    pub const SETEVRREGS = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x15,
+        else => @compileError("no PTRACE.SETEVRREGS on this architecture")
+    };
+    pub const GETREGS64 = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x16,
+        else => @compileError("no PTRACE.GETREGS64 on this architecture")
+    };
+    pub const SETREGS64 = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x17,
+        else => @compileError("no PTRACE.SETREGS64 on this architecture")
+    };
+    pub const GET_DEBUGREG = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x19,
+        else => @compileError("no PTRACE.GET_DEBUGREG on this architecture")
+    };
+    pub const SET_DEBUGREG = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x1a,
+        else => @compileError("no PTRACE.SET_DEBUGREG on this architecture")
+    };
+    pub const GETVSRREGS = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x1b,
+        else => @compileError("no PTRACE.GETVSRREGS on this architecture")
+    };
+    pub const SETVSRREGS = switch (native_arch) {
+        .powerpc, .powerpc64 => 0x1c,
+        else => @compileError("no PTRACE.SETVSRREGS on this architecture")
+    };
+
+    // For reference:
+    // pub const arch_dependant = switch (native_arch) {
+    //     .arm => struct {
+    //         pub const GETWMMXREGS = 18;
+    //         pub const SETWMMXREGS = 19;
+    //         pub const GET_THREAD_AREA = 22;
+    //         pub const SET_SYSCALL = 23;
+    //         pub const GETCRUNCHREGS = 25;
+    //         pub const SETCRUNCHREGS = 26;
+    //         pub const GETVFPREGS = 27;
+    //         pub const SETVFPREGS = 28;
+    //         pub const GETHBPREGS = 29;
+    //         pub const SETHBPREGS = 30;
+    //         pub const GETFDPIC = 31;
+    //         pub const GETFDPIC_EXEC = 0;
+    //         pub const GETFDPIC_INTERP = 1;
+    //     },
+    //     .x86_64 => struct {
+    //         pub const GET_THREAD_AREA = 25;
+    //         pub const SET_THREAD_AREA = 26;
+    //         pub const ARCH_PRCTL = 30;
+    //         pub const SYSEMU = 31;
+    //         pub const SYSEMU_SINGLESTEP = 32;
+    //         pub const SINGLEBLOCK = 33;
+    //     },
+    //     .m68k => struct {
+    //         pub const GET_THREAD_AREA = 25;
+    //         pub const SINGLEBLOCK = 33;
+    //     },
+    //     .mips, .mips64 => struct {
+    //         pub const GET_THREAD_AREA = 25;
+    //         pub const SET_THREAD_AREA = 26;
+    //         pub const PEEKTEXT_3264 = 0xc0;
+    //         pub const PEEKDATA_3264 = 0xc1;
+    //         pub const POKETEXT_3264 = 0xc2;
+    //         pub const POKEDATA_3264 = 0xc3;
+    //         pub const GET_THREAD_AREA_3264 = 0xc4;
+    //         pub const GET_WATCH_REGS = 0xd0;
+    //         pub const SET_WATCH_REGS = 0xd1;
+    //     },
+    //     .s390x => struct {
+    //         pub const SINGLEBLOCK = 12;
+    //         pub const OLDSETOPTIONS = 21;
+    //         pub const SYSEMU = 31;
+    //         pub const SYSEMU_SINGLESTEP = 32;
+    //         pub const PEEKUSR_AREA = 0x5000;
+    //         pub const POKEUSR_AREA = 0x5001;
+    //         pub const GET_LAST_BREAK = 0x5006;
+    //         pub const ENABLE_TE = 0x5009;
+    //         pub const DISABLE_TE = 0x5010;
+    //         pub const TE_ABORT_RAND = 0x5011;
+    //     },
+    //     .x86 => struct {
+    //         pub const GET_THREAD_AREA = 25;
+    //         pub const SET_THREAD_AREA = 26;
+    //         pub const SYSEMU = 31;
+    //         pub const SYSEMU_SINGLESTEP = 32;
+    //         pub const SINGLEBLOCK = 33;
+    //     },
+    //     .powerpc, .powerpc64 => struct {
+    //         pub const GETVRREGS = 0x12;
+    //         pub const SETVRREGS = 0x13;
+    //         pub const GETEVRREGS = 0x14;
+    //         pub const SETEVRREGS = 0x15;
+    //         pub const GETREGS64 = 0x16;
+    //         pub const SETREGS64 = 0x17;
+    //         pub const GET_DEBUGREG = 0x19;
+    //         pub const SET_DEBUGREG = 0x1a;
+    //         pub const GETVSRREGS = 0x1b;
+    //         pub const SETVSRREGS = 0x1c;
+    //         pub const SYSEMU = 0x1d;
+    //         pub const SYSEMU_SINGLESTEP = 0x1e;
+    //         pub const SINGLEBLOCK = 0x100;
+    //     },
+    //     else => struct {}
+    // };
+
+    pub const PeeksiginfoArgs = extern struct {
+        off: u64,
+        flags: u32,
+        nr: i32
+    };
+
+    pub const SeccompMetadata = extern struct {
+        filter_off: u64,
+        flags: u64
+    };
+
+    pub const SyscallInfo = extern struct {
+        pub const NONE = 0;
+        pub const ENTRY = 1;
+        pub const EXIT = 2;
+        pub const SECCOMP = 3;
+
+        op: u8,
+        pad: [3]u8,
+        arch: u32,
+        instruction_pointer: u64,
+        stack_pointer: u64,
+        other_info: extern union {
+            entry: extern struct {
+                nr: u64,
+                args: [6]u64
+            },
+            exit: extern struct {
+                rval: i64,
+                is_error: u8
+            },
+            seccomp: extern struct {
+                nr: u64,
+                args: [6]u64,
+                ret_data: u32
+            }
+        }
+    };
+
+    pub const RseqConfiguration = extern struct {
+        rseq_abi_pointer: u64,
+        rseq_abi_size: u32,
+        signature: u32,
+        flags: u32,
+        pad: u32
+    };
 };
 
 /// For futex2_waitv and futex2_requeue. Arrays of `futex2_waitone` allow
